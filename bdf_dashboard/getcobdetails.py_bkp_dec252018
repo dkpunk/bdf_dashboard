@@ -1,0 +1,12 @@
+import sys
+
+cob_name=sys.argv[1]
+
+file_list={"USAA" : "mail_usaa.html","PNC_BDF":"mail_pnc.html","PNC_SMB" : "mail_pnc_smb.html"}
+html_file=file_list[cob_name]
+filename="/var/www/html/SO/SO/ToolOpsDashBoard/RETINS/MQ_scripts/UN_DASHBOARD/BDF/"+cob_name+"/"+html_file
+with open(filename,"r") as f:
+	lines=f.readlines()
+	for element in lines[5:]:
+		print element
+

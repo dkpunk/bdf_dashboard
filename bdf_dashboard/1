@@ -1,0 +1,10 @@
+<?php
+$db_name=$_GET['db_name'];
+$region=$_GET['region'];
+$fromdate=$_GET['fromdate'];
+$fromtime=$_GET['fromtime'];
+$todate=$_GET['todate'];
+$totime=$_GET['totime'];
+$output=shell_exec("python ./getselecctedsession.py $db_name $region $fromdate $fromtime $todate $totime");
+echo "$output";
+?>

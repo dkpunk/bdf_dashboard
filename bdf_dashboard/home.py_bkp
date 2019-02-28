@@ -1,0 +1,88 @@
+import requests
+import json
+import re
+import os
+import csv
+from collections import Counter
+
+cob_names=["PNC_BDF","PNC_SMB","USAA"]
+mq_path="/var/www/html/SO/SO/ToolOpsDashBoard/RETINS/MQ_scripts/UN_DASHBOARD/BDF/"
+def getmqdepth(cob_name):
+	mqdepth=""
+	mqstats=""
+	try:
+	   with open(mq_path+cob_name+"/MQFdepth","r") as f1:
+		mqdepth=f1.read()
+	   with open(mq_path+cob_name+"/MQdepth.txt","r") as f2:
+		mqstats=f2.read()
+	except IOError:
+	   mqdepth="Unable to read file"
+	   mqstats="Unable to read file"
+	return mqdepth,mqstats
+		
+
+print '''
+<!DOCTYPE html>
+<html>
+<head>
+<title>BDF Details</title>
+<style>
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+.showme{ 
+   display: none;
+ }
+ .showhim:hover .showme{
+   display : block;
+ }
+ .showhim:hover .ok{
+   display : none;
+ }
+table {
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 1px solid black;
+}</style>
+</head><body><h3>BDF details</h3>
+<table id=\"customers\" class=\"table table-bordered\" cellspacing=\"0\" style=\"width:100%\">
+<thead><tr><th>Cobrand group</th><th>Total Files</th><th>Files processed</th><th>DB Filing Rate</th><th>Transaction per Minute</th><th>Status</th><th>Start Time</th><th>ETA</th><th>MQ Depth</th></tr></thead><tbody>'''
+for cob_name in cob_names:
+	mqdepth,mqstats=getmqdepth(cob_name)
+	print "<tr><td><a href=\"getcobdetails.php?cob_name={0}\" target=\"_blank\">{0}</a></td><td>36</td><td>10</td><td>2</td><td>2</td><td>Running</td><td>Wed 12-Dec 01:05</td><td>-</td><td><div class=\"showhim\">{1}<div class=\"showme\"><table><td>{2}</td></table></div></div></td></tr>".format(cob_name,mqdepth,mqstats)
+
+print '''</tbody></table><script src="jquery-1.12.4.js"></script> 
+     <script src="jquery.dataTables.min.js"></script>
+     <script src="dataTables.bootstrap.min.js"></script>
+      <link href="bootstrap.min.css" rel="stylesheet"> 
+      <link href="dataTables.bootstrap.min.css" rel="stylesheet">
+      
+
+
+    <script>
+
+
+$(document).ready(function() {
+     $('#customers').DataTable();
+} );
+
+
+</script></body></html>'''
+	
+	
